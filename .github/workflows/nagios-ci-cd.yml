@@ -23,7 +23,7 @@ jobs:
       - name: Validar configuración desde el repo
         run: |
           test -f "$REPO_CFG_FILE"
-          /usr/local/nagios/bin/nagios -v "$REPO_CFG_FILE"
+          sudo /usr/local/nagios/bin/nagios -v "$REPO_CFG_FILE"
 
       - name: Copiar configs al directorio de Nagios
         run: |
@@ -31,5 +31,5 @@ jobs:
 
       - name: Validar configuración final y recargar Nagios
         run: |
-          /usr/local/nagios/bin/nagios -v "$NAGIOS_CFG_FILE"
-          systemctl reload nagios || sudo service nagios reload
+          sudo /usr/local/nagios/bin/nagios -v "$NAGIOS_CFG_FILE"
+          sudo systemctl reload nagios || sudo service nagios reload
