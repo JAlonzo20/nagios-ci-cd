@@ -1,0 +1,34 @@
+name: Agregar PCs PC-LAB automáticamente
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "Cuántas PCs nuevas quieres agregar (ej. 5)"
+        required: true
+        default: "1"
+
+jobs:
+  add_hosts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Ejecutar script de generación de hosts
+        run: |
+          python tools/add_pc_lab_hosts.py --count ${{ inputs.count }}
+
+      - name: Commit y push automáticos
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto: agregar ${{ inputs.count }} hosts PC-LAB"
+          commit_user_name: "Nagios CI Bot"
+          commit_user_email: "ci-bot@example.com"
+          branch: main
