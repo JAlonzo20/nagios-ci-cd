@@ -3,8 +3,10 @@ name: Nagios CI/CD local
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: ["Agregar PCs PC-LAB automáticamente"]
+    types:
+      - completed
 
 env:
   REPO_CFG_DIR: nagios_conf
@@ -15,6 +17,8 @@ env:
 jobs:
   validate_and_deploy:
     runs-on: self-hosted
+    # Si el disparo fue por workflow_run, solo queremos correr si terminó en success
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: Checkout repo
@@ -32,4 +36,5 @@ jobs:
       - name: Validar configuración final y recargar Nagios
         run: |
           sudo /usr/local/nagios/bin/nagios -v "$NAGIOS_CFG_FILE"
-          sudo systemctl reload nagios
+          sudo systemctl reload nagios || sudo service nagios reload
+
