@@ -32,4 +32,4 @@ jobs:
       - name: Validar configuración final y recargar Nagios
         run: |
           sudo /usr/local/nagios/bin/nagios -v "$NAGIOS_CFG_FILE"
-          sudo systemctl reload nagios || sudo service nagios reload
+          sudo systemctl reload nagios
